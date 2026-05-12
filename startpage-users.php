@@ -27,7 +27,7 @@ if ($mode == "list") {
 	echo "<li>".$row["username"]."&nbsp;<a href=\"$PHP_SELF?show=users&mode=del&id=".$row["id"]."\">del</a></li>\n";
   }
   echo "</ul>\n";
-  mysql_free_result($result);
+  mysqli_free_result($result);
 
   echo createLink("Add user", "Add user", "$PHP_SELF?show=users&mode=add", "");
 } else if ($mode == "add") {
@@ -48,7 +48,7 @@ if ($query) {
   if ($row = mysqli_fetch_array($result)) {
     $c_id = $row["id"];
     $c_username = $row["username"];
-    mysql_free_result($result);
+    mysqli_free_result($result);
   }
 }
 

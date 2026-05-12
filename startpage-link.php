@@ -37,7 +37,7 @@ if ($query) {
     $c_name = $row["name"];
     $c_link = $row["link"];
     $c_category = $row["category"];
-    mysql_free_result($result);
+    mysqli_free_result($result);
   }
 }
 

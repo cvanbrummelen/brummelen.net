@@ -52,7 +52,7 @@ class common {
     }
     
     function validEmail($email){
-        if(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", $email)) {
+        if(preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/i", $email)) {
             return true;
         }
         else{
@@ -192,8 +192,8 @@ class common {
       global $SETTINGS;
       if($status == 'send')
       {
-			$recipient=$SETTINGS[email]; //hier je emailadres
-			$subject=$SETTINGS[onderwerp]; //hier vul je een subjectnaam in zoiets als 'Contact' of 'Info +sitenaam+'
+			$recipient=$SETTINGS['email']; //hier je emailadres
+			$subject=$SETTINGS['onderwerp']; //hier vul je een subjectnaam in zoiets als 'Contact' of 'Info +sitenaam+'
 			$from =$_POST['email'];
 			$email = $_POST['email'];
 			$name = $_POST['contactpersoon'];
@@ -211,7 +211,7 @@ class common {
 			<br><b>Opmerking: </b>".$_POST['bericht']."
 			</td></tr></table></body></html>";
 			
-			if($_POST[email] == "" || $_POST[telefoon] == ""  || $_POST[contactpersoon] == "" )
+			if($_POST['email'] == "" || $_POST['telefoon'] == ""  || $_POST['contactpersoon'] == "" )
 			{
 				$this->redirect("index.php?pagina=contact", 3,"U heeft niet alle verplichte velden ingevuld.");
 			}

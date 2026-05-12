@@ -14,8 +14,8 @@ function count_category($category) {
 
 	$result = Query($DBDatabase, "SELECT parent, count FROM categories ".
 		"WHERE id='$category'");
-	if (mysql_num_rows($result) == 1) {
-		$row = mysql_fetch_array($result);
+	if (mysqli_num_rows($result) == 1) {
+		$row = mysqli_fetch_array($result);
 		echo "Count is now: ".$row["count"]."<BR>\n";
 		if (is_numeric($row["count"])) {
 			$newcount = $row["count"] + 1;
@@ -35,8 +35,8 @@ if (!is_numeric($id) || !is_numeric($category)) {
 } else {
 	Connect();
 	$result = Query($DBDatabase, "SELECT count FROM links WHERE id='$id'");
-	if (mysql_num_rows($result) == 1) {
-		$row = mysql_fetch_array($result);
+	if (mysqli_num_rows($result) == 1) {
+		$row = mysqli_fetch_array($result);
 		echo "Count is now: ".$row["count"]."<BR>\n";
 		if (is_numeric($row["count"])) {
 			$newcount = $row["count"] + 1;

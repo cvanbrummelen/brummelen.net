@@ -1,9 +1,10 @@
 <?php
 
 function get_db_version($db) {
+	global $link;
 	$found = 0;
 	$version = 0;
-	$tables = mysqli_list_tables($db);
+	$tables = mysqli_query($link, "SHOW TABLES");
 	if (mysqli_num_rows($tables) == 0)
 		return 0;
 
@@ -50,7 +51,7 @@ function get_query_post_var($name) {
 	$var = "";
 
 	if (isset($_POST[$name]) && strlen($_POST[$name]))
-		$var = mysqli_escape_string($link, $_POST[$name]);
+		$var = mysqli_real_escape_string($link, $_POST[$name]);
 	
 	return $var;
 }
@@ -60,7 +61,7 @@ function get_query_get_var($name) {
 	$var = "";
 
 	if (isset($_GET[$name]) && strlen($_GET[$name]))
-		$var = mysqli_escape_string($link, $_GET[$name]);
+		$var = mysqli_real_escape_string($link, $_GET[$name]);
 	
 	return $var;
 }

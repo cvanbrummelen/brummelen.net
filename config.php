@@ -13,7 +13,7 @@ $hostadres = "localhost";
 $gebruikersnaam = "brummelen_net";
 $password = "64mxbw6EiPuf0QJ";
 $database = "brummelen_net";
-if(!($link_id = mysqli_connect($hostadres, $gebruikersnaam, $password))) die(mysql_error());   
+if(!($link_id = mysqli_connect($hostadres, $gebruikersnaam, $password))) die(mysqli_connect_error());   
 mysqli_select_db($link_id, $database);   
 
 // HTML Configuration
