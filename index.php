@@ -84,11 +84,11 @@ echo "<link rel=\"stylesheet\" href=\"https://www.brummelen.net/$HTMLStyleSheet\
 echo "</head>\n";
 echo "<body>";
 
-if($_GET[p] == "startpagina")
+if($_GET['p'] == "startpagina")
 {
 	$startpagina = "id='current'";
 }
-elseif($_GET[p] == "dvd")
+elseif($_GET['p'] == "dvd")
 {
 	$dvd = "id='current'"; 
 }
@@ -96,7 +96,7 @@ else
 {
 	$startpagina = "id='current' ";
 }
-echo $_GET[p];
+echo $_GET['p'];
 $googleUser = $DATABASE->query("SELECT * FROM google_users WHERE secure = '".$_COOKIE['brummelen_google']."'");
 ?>
 <div class='container'>
@@ -119,7 +119,7 @@ $googleUser = $DATABASE->query("SELECT * FROM google_users WHERE secure = '".$_C
 		if($googleUser)
 			{
 			$googleUser = $googleUser[0];
-			echo "Welkom ".ucfirst($googleUser[username]). "<a href='logout.php'><img src='settings.png' border='0'></a>";	
+			echo "Welkom ".ucfirst($googleUser['username']). "<a href='logout.php'><img src='settings.png' border='0'></a>";	
 			}	
 		else
 			{
@@ -146,17 +146,17 @@ $googleUser = $DATABASE->query("SELECT * FROM google_users WHERE secure = '".$_C
 <div class='content'>
 	<center>
 <?php
-if(!($_GET[p]))
+if(!($_GET['p']))
 {
 	include('startpage.php');
 }
-if($_GET[p] == "startpagina")
+if($_GET['p'] == "startpagina")
 {
 	include('startpage.php');
 }
 if($googleUser)
 	{
-		if($_GET[p] == "dvd")
+		if($_GET['p'] == "dvd")
 		{
 			include('dvd.php');
 		}

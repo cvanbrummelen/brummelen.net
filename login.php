@@ -49,17 +49,17 @@ if(strlen($token) == 40) {//test the length of the token; it should be 40 charac
   $auth_info = json_decode($result, true);
 
   if ($auth_info['stat'] == 'ok') {
-	$getEmail = $DATABASE->query("SELECT email FROM trusted_users WHERE email = '".$auth_info[profile][verifiedEmail]."'");
+	$getEmail = $DATABASE->query("SELECT email FROM trusted_users WHERE email = '".$auth_info['profile']['verifiedEmail']."'");
 	$email = $getEmail[0];
-	if($auth_info[profile][verifiedEmail] == $email[email])
+	if($auth_info['profile']['verifiedEmail'] == $email['email'])
 	{
-		$secure = sha1($auth_info[profile][preferredUsername]."".$auth_info[profile][verifiedEmail]."".$_SERVER["REMOTE_ADDR"]."".$auth_info[profile][googleUserId]);
+		$secure = sha1($auth_info['profile']['preferredUsername']."".$auth_info['profile']['verifiedEmail']."".$_SERVER["REMOTE_ADDR"]."".$auth_info['profile']['googleUserId']);
 		$DATABASE->query("INSERT INTO google_users (`username`, `email`, `ip`, `google_user_id`, `secure`) 
 		VALUES (
-		'".$DATABASE->injection($auth_info[profile][preferredUsername])."',
-		'".$DATABASE->injection($auth_info[profile][verifiedEmail])."',
+		'".$DATABASE->injection($auth_info['profile']['preferredUsername'])."',
+		'".$DATABASE->injection($auth_info['profile']['verifiedEmail'])."',
 		'".$DATABASE->injection($_SERVER["REMOTE_ADDR"])."',
-		'".$DATABASE->injection($auth_info[profile][googleUserId])."',
+		'".$DATABASE->injection($auth_info['profile']['googleUserId'])."',
 		'".$DATABASE->injection($secure)."'
 		)");	
 		setcookie ("brummelen_google" ,$secure, time()+31536000);
@@ -68,7 +68,7 @@ if(strlen($token) == 40) {//test the length of the token; it should be 40 charac
 	}
 	else
 		{
-			echo $auth_info[profile][verifiedEmail]."<br>";
+			echo $auth_info['profile']['verifiedEmail']."<br>";
 			$COMMON->redirect("index.php", 5, "Uw Google account is niet in onze database gevonden en u heeft geen extra toegang gekregen.");
 		}
     /* STEP 4: Use the identifier as the unique key to sign the user into your system.

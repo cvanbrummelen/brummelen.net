@@ -19,7 +19,7 @@ class Database{
     var $prefix;
     var $tables;
     var $tables_sync;
-    function Database($host, $db, $username, $password, $prefix="", $tables=null){
+    function __construct($host, $db, $username, $password, $prefix="", $tables=null){
         $this->host = $host;
         $this->dbname = $db;
         $this->username = $username;
@@ -231,15 +231,7 @@ class Database{
 	}
 	
 	function injection($value){
-	    if( get_magic_quotes_gpc() ){
-	          $value = stripslashes( $value );
-	   	}
-	    if( function_exists( "mysql_real_escape_string" ) ){
-	          $value = mysqli_real_escape_string($this->link, $value );
-	    }
-    	else{
-          $value = addslashes( $value );
-    	}
+	    $value = mysqli_real_escape_string($this->link, $value);
 		return $value;
 	}
 }

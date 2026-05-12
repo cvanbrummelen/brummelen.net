@@ -19,22 +19,23 @@ $tablelist = array ("Variables", "Users", "Categories", "Links");
 
 Connect();
 function get_db_version($db) {
+	global $link;
 	$found = 0;
 	$version = 0;
-	$tables = mysql_list_tables($db);
-	if (mysql_num_rows($tables) == 0)
+	$tables = mysqli_query($link, "SHOW TABLES");
+	if (mysqli_num_rows($tables) == 0)
 		return 0;
 
 	while ($row = mysqli_fetch_array($tables)) {
 		if ($row[0] == "variables")
 			$found = 1;
 	}
-	mysql_free_result($tables);
+	mysqli_free_result($tables);
 	if (!$found)
 		return 1;
 
 	$result = Query($db, "SELECT value FROM variables WHERE name='version'");
-	if (mysql_num_rows($result) != 1)
+	if (mysqli_num_rows($result) != 1)
 		return -1;
 	
 	$row = mysqli_fetch_array($result);
@@ -51,43 +52,43 @@ $version = get_db_version($DBDatabase);
 echo "Database version: $version<br/>\n";
 
 function AddCategory($name, $parent, $user) {
-	global $DBDatabase;
+	global $DBDatabase, $link;
 	if (Query($DBDatabase,"INSERT INTO categories (name, parent, user) values ('$name', '$parent', '$user')"))
 		echo "Entry added to categories.<BR>";
 	else
-		echo "Failed to add category: ".mysql_error()."<br/>";
-	return mysql_insert_id();
+		echo "Failed to add category: ".mysqli_error($link)."<br/>";
+	return mysqli_insert_id($link);
 }
 
-function AddLink($name, $link, $category, $user) {
-	global $DBDatabase;
-	if (Query($DBDatabase,"INSERT INTO links (name, link, category, user) values ('$name', '$link', '$category', '$user')"))
+function AddLink($name, $link_url, $category, $user) {
+	global $DBDatabase, $link;
+	if (Query($DBDatabase,"INSERT INTO links (name, link, category, user) values ('$name', '$link_url', '$category', '$user')"))
 		echo "Entry added to links.<BR>";
 	else
-		echo "Failed to add link: ".mysql_error()."<br/>";
-	return mysql_insert_id();
+		echo "Failed to add link: ".mysqli_error($link)."<br/>";
+	return mysqli_insert_id($link);
 }
 
 function AddUser($username, $password) {
-	global $DBDatabase;
+	global $DBDatabase, $link;
 	if (Query($DBDatabase, "INSERT INTO users (username, password) VALUES ('$username', MD5('$password'));"))
 		echo "Entry added to users.<br/>\n";
 	else
-		echo "Failed to add user: ".mysql_error()."<br/>\n";
-	return mysql_insert_id();
+		echo "Failed to add user: ".mysqli_error($link)."<br/>\n";
+	return mysqli_insert_id($link);
 }
 
 function AddVariable($name, $value) {
-	global $DBDatabase;
+	global $DBDatabase, $link;
 	if (Query($DBDatabase, "INSERT INTO variables (name, value) VALUES ('$name', '$value')"))
 		echo "Entry added to variables.<br/>\n";
 	else
-		echo "Failed to add variable: ".mysql_error()."<br/>\n";
-	return mysql_insert_id();
+		echo "Failed to add variable: ".mysqli_error($link)."<br/>\n";
+	return mysqli_insert_id($link);
 }
 
 function CreateTable($table) {
-	global $DBDatabase;
+	global $DBDatabase, $link;
 
 	$tablestr=$table."_table";
 	global $$tablestr;
@@ -95,7 +96,7 @@ function CreateTable($table) {
 	if (Query($DBDatabase, $$tablestr)) {
 		echo "Table ".$table." created successfully.<BR>";
 	} else {
-		echo "Error creating table: ".mysql_error()."<BR>";
+		echo "Error creating table: ".mysqli_error($link)."<BR>";
 	}
 }
 
@@ -105,8 +106,8 @@ if ($version == 0) {
 	$c_username = "";
 	$c_password = "";
 	if (isset($_POST["username"]) && isset($_POST["password"])) {
-		$c_username = mysql_escape_string($_POST["username"]);
-		$c_password = mysql_escape_string($_POST["password"]);
+		$c_username = mysqli_real_escape_string($link, $_POST["username"]);
+		$c_password = mysqli_real_escape_string($link, $_POST["password"]);
 	}
 	
 	if (!strlen($c_username) || !strlen($c_password)) {
@@ -127,7 +128,7 @@ if ($version == 0) {
 	if (Query($DBDatabase,"INSERT INTO categories (name,parent,user) values (\"No parent\",\"1\",'0')")) {
 		echo "Entry added to categories.<BR>";
 	} else {
-		echo "Error adding entry: ".mysql_error()."<BR>";
+		echo "Error adding entry: ".mysqli_error($link)."<BR>";
 	}
 
 	echo "Creating initial fill.<br/>\n";
@@ -150,8 +151,8 @@ if ($version == 1) {
 	$c_username = "";
 	$c_password = "";
 	if (isset($_POST["username"]) && isset($_POST["password"])) {
-		$c_username = mysql_escape_string($_POST["username"]);
-		$c_password = mysql_escape_string($_POST["password"]);
+		$c_username = mysqli_real_escape_string($link, $_POST["username"]);
+		$c_password = mysqli_real_escape_string($link, $_POST["password"]);
 	}
 	
 	if (!strlen($c_username) || !strlen($c_password)) {
@@ -165,22 +166,22 @@ if ($version == 1) {
 	if (Query($DBDatabase, "ALTER TABLE categories ADD user INT NOT NULL REFERENCES users AFTER parent;")) {
 		echo "Table categories altered.<br/>\n";
 	} else {
-		echo "Failed to alter table categories: ".mysql_error()."<br/>\n";
+		echo "Failed to alter table categories: ".mysqli_error($link)."<br/>\n";
 	}
 	if (Query($DBDatabase, "UPDATE categories SET user=1 WHERE id!=1;")) {
 		echo "Table categories updated.<br/>\n";
 	} else {
-		echo "Failed to update table categories: ".mysql_error()."<br/>\n";
+		echo "Failed to update table categories: ".mysqli_error($link)."<br/>\n";
 	}
 	if (Query($DBDatabase, "ALTER TABLE links ADD user INT NOT NULL REFERENCES users AFTER category;")) {
 		echo "Table links altered.<br/>\n";
 	} else {
-		echo "Failed to alter table links: ".mysql_error()."<br/>\n";
+		echo "Failed to alter table links: ".mysqli_error($link)."<br/>\n";
 	}
 	if (Query($DBDatabase, "UPDATE links SET user=1;")) {
 		echo "Table links updated.<br/>\n";
 	} else {
-		echo "Failed to update table links: ".mysql_error()."<br/>\n";
+		echo "Failed to update table links: ".mysqli_error($link)."<br/>\n";
 	}
 	CreateTable("Users");
 	CreateTable("Variables");
@@ -202,7 +203,7 @@ if ($version == 2) {
 			if (Query($DBDatabase, $tablestr2, false)) {
 				echo "Table ".$table." dropped successfully.<BR>";
 			} else {
-				echo "Error dropping table: ".mysql_error()."<BR>";
+				echo "Error dropping table: ".mysqli_error($link)."<BR>";
 			}
 			next($tablelist);
 		}
