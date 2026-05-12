@@ -1,0 +1,19 @@
+Startpage by Paul Bakker
+
+Requirements: Apache with PHP and MySQL.
+
+Installation:
+In order to install startpage you have to edit config.php so it contains the correct
+information for the MySQL database. After this you can run startpage-create.php to
+create a basic installation of the tables required.
+WARNING: It is wise to remove startpage-create.php from this folder after that or remove
+its read rights, as this script will clear your startpage database if run another time!!!
+
+Configuration:
+You can further configure the look from the page from config.php or the stylesheet used.
+
+Features:
+* Group links in categories.
+* Count of link clicks for dynamic ordering of links and categories.
+
+For questions and suggestions, you can mail me at p.j.bakker@brainspark.nl
